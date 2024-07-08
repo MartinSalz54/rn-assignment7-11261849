@@ -1,32 +1,24 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import removeIcon from '../remove.png'; // Adjust the path if necessary
 
+const productsData = [
+  { id: '1', imgSrc: require('../dress4.png'), name: 'Office Wear', subname: 'reversible angora cardigan', price: 120 },
+  { id: '2', imgSrc: require('../dress5.png'), name: 'Lameri', subname: 'reversible angora cardigan', price: 120 },
+  { id: '3', imgSrc: require('../dress3.png'), name: 'Church Wear', subname: 'reversible angora cardigan', price: 120 },
+];
+
 const CheckoutPage = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(productsData); // State to manage products in checkout
 
-  useEffect(() => {
-    const loadCart = async () => {
-      try {
-        const storedCart = await AsyncStorage.getItem('cart');
-        if (storedCart) {
-          setProducts(JSON.parse(storedCart));
-        }
-      } catch (error) {
-        console.error('Failed to load cart from storage', error);
-      }
-    };
-    loadCart();
-  }, []);
-
-  const removeFromCart = async (id) => {
-    const updatedCart = products.filter(product => product.id !== id);
-    setProducts(updatedCart);
-    await AsyncStorage.setItem('cart', JSON.stringify(updatedCart));
+  // Function to remove a product from the list
+  const removeProduct = (productId) => {
+    const updatedProducts = products.filter(item => item.id !== productId);
+    setProducts(updatedProducts);
   };
 
+  // Render item function for FlatList
   const renderItem = ({ item }) => (
     <View style={styles.product}>
       <Image source={item.imgSrc} style={styles.productImage} />
@@ -35,15 +27,11 @@ const CheckoutPage = () => {
         <Text style={styles.productsubName}>{item.subname}</Text>
         <Text style={styles.productPrice}>${item.price}</Text>
       </View>
-      <TouchableOpacity onPress={() => removeFromCart(item.id)}>
+      <TouchableOpacity onPress={() => removeProduct(item.id)}>
         <Image source={removeIcon} style={styles.removeIcon} />
       </TouchableOpacity>
     </View>
   );
-
-  const getTotalPrice = () => {
-    return products.reduce((sum, product) => sum + product.price, 0);
-  };
 
   return (
     <View style={styles.container}>
@@ -67,10 +55,11 @@ const CheckoutPage = () => {
       {/* Footer Section */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>EST. TOTAL</Text>
-        <Text style={styles.totalPrice}>${getTotalPrice()}</Text>
+        <Text style={styles.totalPrice}>${products.reduce((total, item) => total + item.price, 0)}</Text>
       </View>
       <View style={styles.footers}>
         <Text style={styles.footersText}>CHECKOUT</Text>
+        <Text style={styles.totalPrice}></Text>
       </View>
     </View>
   );
@@ -81,10 +70,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  footersText: {
+  footersText:{
     marginLeft: 160,
-    fontSize: 18,
-    fontWeight: 'bold',
+
   },
   headerContainer: {
     flexDirection: 'row',

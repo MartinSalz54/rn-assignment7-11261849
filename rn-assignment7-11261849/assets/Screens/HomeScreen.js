@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet, Button, Image, Text, StatusBar, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import dress4 from '../dress4.png';
 import dress5 from '../dress5.png';
 import dress3 from '../dress3.png';
@@ -23,7 +24,8 @@ const products = [
   { id: '8', imgSrc: dress3, name: 'Lame', subname: 'reversible angora cardigan', price: 120 },
 ];
 
-function HomeScreen({ navigation }) {
+const HomeScreen = () => {
+  const navigation = useNavigation();
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
@@ -37,6 +39,7 @@ function HomeScreen({ navigation }) {
         console.error('Failed to load cart from storage', error);
       }
     };
+
     loadCart();
   }, []);
 
@@ -47,7 +50,7 @@ function HomeScreen({ navigation }) {
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.product}>
+    <TouchableOpacity style={styles.product} onPress={() => navigateToDetail(item)}>
       <View style={styles.imageContainer}>
         <Image source={item.imgSrc} style={styles.productImage} />
         <TouchableOpacity onPress={() => addToCart(item)}>
@@ -57,8 +60,12 @@ function HomeScreen({ navigation }) {
       <Text style={styles.productName}>{item.name}</Text>
       <Text style={styles.subName} numberOfLines={1}>{item.subname}</Text>
       <Text style={styles.productPrice}>${item.price}</Text>
-    </View>
+    </TouchableOpacity>
   );
+
+  const navigateToDetail = (item) => {
+    navigation.navigate('ProductDetail', { product: item });
+  };
 
   return (
     <View style={styles.container}>
@@ -81,13 +88,13 @@ function HomeScreen({ navigation }) {
         contentContainerStyle={styles.productList}
       />
       <Button
-        title="Go to Checkout"
-        onPress={() => navigation.navigate('Checkout')}
+        title="Go to Cart"
+        onPress={() => navigation.navigate('Cart')}
       />
       <StatusBar style="auto" />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
