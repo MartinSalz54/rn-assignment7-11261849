@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet, Button, Image, Text, StatusBar, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -70,7 +71,9 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Image source={menuIcon} style={styles.topIcon} />
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+          <Image source={menuIcon} style={styles.topIcon} />
+        </TouchableOpacity>
         <Image source={logoIcon} style={styles.logoIcon} />
         <Image source={shoppingBagIcon} style={styles.topIcon} />
         <Image source={searchIcon} style={styles.topIcon} />
@@ -105,7 +108,8 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
     marginBottom: 20,
   },
   subHeaderContainer: {
@@ -114,23 +118,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logoIcon: {
-    marginLeft: 50,
+    width: 80,
+    height: 30,
+    resizeMode: 'contain',
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginRight: 100,
     textTransform: 'uppercase',
   },
   topIcon: {
     width: 24,
     height: 24,
-    marginLeft: 10,
   },
   icon: {
     width: 24,
     height: 24,
-    marginLeft: 10,
   },
   productList: {
     alignItems: 'center',
@@ -142,7 +145,7 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     alignItems: 'center',
-    width: '40%',
+    width: '45%',
   },
   imageContainer: {
     position: 'relative',
